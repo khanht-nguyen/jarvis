@@ -1,12 +1,15 @@
 require 'socket'
 require 'colorize'
 require './deps/hasher'
+require './deps/parser'
+require 'json'
 
 class Server
     def initialize(port, debug, key)
         @port = port
         @key = key
         @hash_obj = Hasher.new()
+        @parser = Parser.new(@hash_obj)
         
         @hash_obj.select_hash('test', 'test123')
     end
@@ -18,6 +21,10 @@ class Server
         end
     end
     
+    def return_message(str)
+        return JSON.generate({:message => str})
+    end
+    
     def serve()
         debug(1, 'Listening on port: ' + @port.to_s)
         
@@ -25,17 +32,32 @@ class Server
         
         loop do
             Thread.start(server.accept) do |c|
+                logged_in = false
+                
                 while l = c.gets
-                    if l.chop == 'exit'
+                    f, *r = l.chop.split(' ')
+                    if f == 'exit'
                         c.close
                     else
-                    
-                        if l.chop == 'get'
-                            c.puts @hash_obj.get_hash('test')
+                        if(defined? @key and logged_in == true) || (defined? key == false)
+                            if f == 'pull'
+                                c.puts @hash_obj.get_hash(r[0])
+                            elsif f == 'get'
+                                c.puts @hash_obj.select_hash(r[0], r[1])
+                            end 
+                        else
+                            if f == 'login'
+                                if r[0] == @key
+                                    c.puts return_message('Correct')
+                                    logged_in = true
+                                else
+                                    c.puts return_message('Wrong')
+                                end
+                            end
                         end
                     end
+                end
             end
-          end
         end
     end
 end

@@ -19,6 +19,7 @@ end
 
 begin
     threads.each{ |t| t.join }
-rescue Exception
+rescue Exception => e
+    puts e
     puts 'Good bye!'
 end

@@ -5,6 +5,8 @@ class Hasher
         @prime_hash = Hash.new
         
         @prime_hash['test'] = {'test' => 'test123', 'test2' => 'test321', 'test3' => 'test456'}
+        @prime_hash['test2'] = {'test' => 'test123', 'test2' => 'test321', 'test3' => 'test456'}
+        @prime_hash['tes3'] = {'test' => 'test123', 'test2' => 'test321', 'test3' => 'test456'}
     end
     
     def get_hash(key, *args)
@@ -21,9 +23,17 @@ class Hasher
     
     def select_hash(key, val)
         begin
-            puts @prime_hash.select { |k| k[key] == val }
+            temp_hash = Hash.new
+            
+            @prime_hash.select do |k, v| 
+                if v[key] == val
+                    temp_hash[k] = v
+                end
+            end
+            
+            return temp_hash
         rescue Exception => e
-            puts e
+            return JSON.generate({:error => 'No key found!'} )
         end
     end
 end
