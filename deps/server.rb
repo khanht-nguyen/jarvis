@@ -1,7 +1,6 @@
 require 'socket'
 require 'colorize'
 require './deps/hasher'
-require './deps/parser'
 require 'json'
 
 class Server
