@@ -2,3 +2,5 @@ channel1:
     port: 2109
     debug_level: 1
     key: a8SidjaKls91jk3
+    backup_file: \path\to\back.up
+    backup_interval: 500 #500 seconds

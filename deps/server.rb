@@ -8,9 +8,8 @@ class Server
         @port = port
         @key = key
         @hash_obj = Hasher.new()
-        @parser = Parser.new(@hash_obj)
         
-        @hash_obj.select_hash('test', 'test123')
+        puts @hash_obj.get_hash('test', 'test123', '=')
     end
     
     def debug(stat, str)
@@ -40,9 +39,9 @@ class Server
                     else
                         if(defined? @key and logged_in == true) || (defined? key == false)
                             if f == 'pull'
-                                c.puts @hash_obj.get_hash(r[0])
+                                c.puts @hash_obj.pull_hash(r[0])
                             elsif f == 'get'
-                                c.puts @hash_obj.select_hash(r[0], r[1])
+                                c.puts @hash_obj.get_hash(r[0], r[1], r[2])
                             end 
                         else
                             if f == 'login'
